@@ -1,0 +1,10 @@
+{
+  "name": "send-expiry-notifications",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Appwrite Function — daily push notifications for expiring items",
+  "main": "src/index.js",
+  "dependencies": {
+    "node-appwrite": "^14.0.0"
+  }
+}

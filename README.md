@@ -37,7 +37,7 @@ A cross-platform household food inventory app for tracking what's in your fridge
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/freezerfamily.git
+git clone https://github.com/resolux66/freezerfamily.git
 cd freezerfamily/familyfreezer
 npm install
 ```

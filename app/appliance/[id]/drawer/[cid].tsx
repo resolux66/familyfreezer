@@ -72,7 +72,7 @@ export default function DrawerDetailScreen() {
 
       {/* ── Header ── */}
       <View className="flex-row items-center px-4 py-3 bg-white border-b border-surface-border">
-        <Pressable className="mr-3 p-2 rounded-full bg-surface-alt" onPress={() => router.back()}>
+        <Pressable className="mr-3 p-2 rounded-full bg-surface-alt" onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}>
           <ArrowLeft color="#1A3A5C" size={20} />
         </Pressable>
         <View className="flex-1">

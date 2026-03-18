@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ActivityIndicator, Alert, FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -43,6 +43,13 @@ export default function HomeScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [householdName, setHouseholdName] = useState('');
   const createHousehold = useCreateHousehold();
+
+  // Auto-select the first household if none is active (e.g. after logout/login)
+  useEffect(() => {
+    if (!activeHouseholdId && households && households.length > 0) {
+      setActiveHousehold(households[0].$id);
+    }
+  }, [activeHouseholdId, households]);
 
   function handleCreateHousehold() {
     if (!householdName.trim()) return;

@@ -1,4 +1,4 @@
-import { Alert, ScrollView, Share, Switch, Text, View, Pressable, ActivityIndicator } from 'react-native';
+import { Alert, Platform, ScrollView, Share, Switch, Text, View, Pressable, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Bell, ChevronRight, Crown, LogOut, Share2, Users } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -149,6 +149,10 @@ export default function SettingsScreen() {
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   function handleSignOut() {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Are you sure you want to sign out?')) logout();
+      return;
+    }
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Sign Out', style: 'destructive', onPress: logout },

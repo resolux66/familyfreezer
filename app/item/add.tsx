@@ -44,7 +44,7 @@ export default function AddItemScreen() {
       submitLabel="Add"
       isSubmitting={addItem.isPending}
       onSubmit={handleSubmit}
-      onCancel={() => router.back()}
+      onCancel={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
     />
   );
 }

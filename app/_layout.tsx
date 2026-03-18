@@ -48,7 +48,10 @@ function AuthGate() {
   useEffect(() => {
     if (isLoading) return;                      // Still checking — don't redirect yet
     const inAuth = segments[0] === '(auth)';
-    if (!user && !inAuth) router.replace('/(auth)/login'); // Logged out → go to login
+    if (!user && !inAuth) {
+      queryClient.clear();                      // Wipe previous user's cached data
+      router.replace('/(auth)/login');          // Logged out → go to login
+    }
     if (user && inAuth && !pendingRegistration) router.replace('/(tabs)'); // Logged in → go to home
   }, [user, isLoading, segments, pendingRegistration]);
 

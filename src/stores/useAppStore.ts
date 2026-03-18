@@ -14,7 +14,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface AppState {
   activeHouseholdId: string | null;
-  setActiveHousehold: (id: string) => void;
+  setActiveHousehold: (id: string | null) => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   // Used by ExpiryBanner (Phase 9) — reset on each new day

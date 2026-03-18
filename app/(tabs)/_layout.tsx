@@ -7,10 +7,12 @@
 // tabBarActiveTintColor / tabBarInactiveTintColor apply to BOTH the icon
 // and the label text — you don't need to set icon colour separately.
 
+import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Home, Search, Settings } from 'lucide-react-native';
 
 import { useNotificationSetup } from '@/hooks/useNotifications';
+import { DemoBanner } from '@/components/ui/DemoBanner';
 
 // 📘 React Native Note — calling hooks in layout components
 // TabLayout renders once when the user enters the authenticated tabs.
@@ -23,6 +25,8 @@ export default function TabLayout() {
   useNotificationSetup();
 
   return (
+    <View style={{ flex: 1 }}>
+      <DemoBanner />
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -53,5 +57,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </View>
   );
 }

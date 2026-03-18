@@ -15,6 +15,7 @@
 import { create } from 'zustand';
 
 import { account } from '@/lib/appwrite';
+import { useAppStore } from '@/stores/useAppStore';
 
 interface AuthUser {
   $id: string;
@@ -67,6 +68,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch {
       // session may already be invalid
     }
+    useAppStore.getState().setActiveHousehold(null);
     set({ user: null });
   },
 }));

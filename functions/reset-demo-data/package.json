@@ -1,0 +1,10 @@
+{
+  "name": "reset-demo-data",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Appwrite Function — resets demo household data to a fixed realistic dataset daily",
+  "main": "src/index.js",
+  "dependencies": {
+    "node-appwrite": "^14.0.0"
+  }
+}

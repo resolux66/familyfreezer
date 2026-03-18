@@ -42,7 +42,7 @@ export default function EditItemScreen() {
     return (
       <ErrorScreen
         message="Item not found. It may have been removed by another household member."
-        onRetry={() => router.back()}
+        onRetry={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
       />
     );
   }
@@ -51,7 +51,7 @@ export default function EditItemScreen() {
     updateItem.mutate(
       { itemId: id ?? '', updates: input },
       {
-        onSuccess: () => router.back(),
+        onSuccess: () => router.canGoBack() ? router.back() : router.replace('/(tabs)'),
         onError: (e) =>
           Alert.alert('Error', e instanceof Error ? e.message : 'Could not update item.'),
       },
@@ -71,7 +71,7 @@ export default function EditItemScreen() {
       submitLabel="Save"
       isSubmitting={updateItem.isPending}
       onSubmit={handleSubmit}
-      onCancel={() => router.back()}
+      onCancel={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
     />
   );
 }

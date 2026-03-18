@@ -49,7 +49,7 @@ export default function ApplianceDetailScreen() {
       <View className="flex-row items-center px-4 py-3">
         <Pressable
           className="mr-3 p-2 rounded-full bg-white"
-          onPress={() => router.back()}
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
         >
           <ArrowLeft color="#1A3A5C" size={20} />
         </Pressable>

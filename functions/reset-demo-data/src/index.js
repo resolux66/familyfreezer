@@ -30,7 +30,7 @@
  * writing to Appwrite. This function must do the same.
  */
 
-import { Client, Databases, ID, Permission, Query, Role, Users } from 'node-appwrite';
+import { Client, Databases, ID, Permission, Query, Role, Teams, Users } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   // ── Appwrite client setup ────────────────────────────────────────────────
@@ -41,6 +41,7 @@ export default async ({ req, res, log, error }) => {
 
   const db    = new Databases(client);
   const users = new Users(client);
+  const teamsService = new Teams(client);
 
   const DATABASE_ID    = process.env.DATABASE_ID;
   const HOUSEHOLDS_COL = process.env.HOUSEHOLDS_COL;
@@ -64,6 +65,22 @@ export default async ({ req, res, log, error }) => {
   const demoUserId = userList.users[0].$id;
   log(`Demo user ID: ${demoUserId}`);
 
+  // ── 1b. Ensure demo user is a confirmed member of the demo team ──────────
+  log('Ensuring demo user is a confirmed team member…');
+  const memberships = await teamsService.listMemberships(DEMO_TEAM_ID);
+  const existing = memberships.memberships.find((m) => m.userId === demoUserId);
+  if (existing && !existing.confirm) {
+    // Unconfirmed (email invite) — delete and recreate via userId so it's auto-confirmed
+    await teamsService.deleteMembership(DEMO_TEAM_ID, existing.$id);
+    await teamsService.createMembership(DEMO_TEAM_ID, ['owner'], undefined, demoUserId);
+    log('Replaced unconfirmed membership with confirmed membership.');
+  } else if (!existing) {
+    await teamsService.createMembership(DEMO_TEAM_ID, ['owner'], undefined, demoUserId);
+    log('Demo user added to team as confirmed member.');
+  } else {
+    log('Demo user already a confirmed team member.');
+  }
+
   // ── 2. Find the demo household ───────────────────────────────────────────
   log('Looking up demo household…');
   const householdList = await db.listDocuments(DATABASE_ID, HOUSEHOLDS_COL, [
@@ -79,6 +96,16 @@ export default async ({ req, res, log, error }) => {
   }
   const householdId = householdDoc.$id;
   log(`Demo household ID: ${householdId}`);
+
+  // ── 2b. Fix household document permissions ────────────────────────────────
+  // The document permissions may reference an old team. Update them to always
+  // match the current DEMO_TEAM_ID so the demo user can read the document.
+  await db.updateDocument(DATABASE_ID, HOUSEHOLDS_COL, householdId, {}, [
+    Permission.read(Role.team(DEMO_TEAM_ID)),
+    Permission.update(Role.team(DEMO_TEAM_ID)),
+    Permission.delete(Role.user(demoUserId)),
+  ]);
+  log('Household permissions updated.');
 
   // ── 3. Delete all existing items for this household ──────────────────────
   log('Deleting existing items…');

@@ -74,9 +74,15 @@ export async function createHousehold(
 }
 
 export async function fetchHouseholdsForUser(userId: string): Promise<Household[]> {
-  // We query by adminUserId as a fast path; team-scoped permissions act as
-  // the true access gate — Appwrite won't return documents the user can't read.
+  // Fetch only the teams this user belongs to, then query households by those
+  // teamIds. This avoids relying on Appwrite Document Security behaviour and
+  // ensures each user only ever sees their own household(s).
+  const userTeams = await teams.list();
+  if (userTeams.total === 0) return [];
+
+  const teamIds = userTeams.teams.map((t) => t.$id);
   const res = await databases.listDocuments(DATABASE_ID, HOUSEHOLDS_COL, [
+    Query.equal('teamId', teamIds),
     Query.limit(50),
   ]);
   return res.documents as unknown as Household[];
